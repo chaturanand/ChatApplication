@@ -13,6 +13,10 @@ import java.awt.GridBagConstraints;
 import javax.swing.JButton;
 import java.awt.Insets;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
 
 public class Client extends JFrame {
 
@@ -30,7 +34,7 @@ public class Client extends JFrame {
 		this.port = port;
 		createWindow();
 		console("Attempting a connection to " + address + ":" + port + ", User: " + name);
-		console("Successfuly Disconnected");
+		// console("Successfuly Disconnected");
 
 	}
 
@@ -68,6 +72,13 @@ public class Client extends JFrame {
 		contentPane.add(txtrHistory, gbc_txtrHistory);
 
 		txtMessage = new JTextField();
+		txtMessage.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					send(txtMessage.getText());
+				}
+			}
+		});
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 0, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -77,6 +88,14 @@ public class Client extends JFrame {
 		txtMessage.setColumns(10);
 
 		JButton btnSend = new JButton("Send");
+		btnSend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// String message=txtMessage.getText();
+				// console(message);
+				// txtMessage.setText("");
+				send(txtMessage.getText());
+			}
+		});
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();
 		gbc_btnSend.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSend.gridx = 2;
@@ -87,6 +106,14 @@ public class Client extends JFrame {
 		txtMessage.requestFocus();
 		setVisible(true);
 		txtMessage.requestFocusInWindow();
+	}
+
+	private void send(String message) {
+		if (message.equals(""))
+			return;
+		message = name + ": " + message;
+		console(message);
+		txtMessage.setText("");
 	}
 
 	public void console(String message) {
